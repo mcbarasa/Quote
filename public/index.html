@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="favicon.png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Sauti Gang"><meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Sauti Gang Studios – Quotes & Invoices</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{--ink:#0A0A0A;--paper:#F4F3EE;--card:#fff;--line:#d5dbd6;--mute:#5d6b73;--go:#2FBF71;--warn:#F2B134;--peak:#FFDE59}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{font:16px/1.4 'DM Sans',system-ui,sans-serif;background:#cfd6d1;color:var(--ink);display:flex;justify-content:center}
+#app{width:100%;max-width:480px;height:100%;background:var(--paper);display:flex;flex-direction:column;position:relative;overflow:hidden}
+h1,h2,h3{font-family:'Bricolage Grotesque',system-ui,sans-serif}
+header{background:var(--ink);color:#fff;padding:calc(env(safe-area-inset-top,0px) + 16px) 18px 18px}
+header .brand{display:flex;justify-content:space-between;align-items:flex-end}
+header h1{font-size:24px;font-weight:800;letter-spacing:-.5px;line-height:1}
+header small{color:#9fb0b8;font-size:13px}
+.vu{display:flex;gap:3px;align-items:flex-end;height:30px}
+.vu i{width:6px;border-radius:2px;background:var(--peak);animation:vu 1.2s ease-in-out infinite alternate}
+.sr{position:absolute;left:-9999px}
+@keyframes vu{from{height:20%}to{height:100%}}
+@media(prefers-reduced-motion:reduce){.vu i{animation:none;height:60%}}
+main{flex:1;overflow-y:auto;padding:16px 16px 24px}
+nav{display:grid;grid-template-columns:repeat(4,1fr);background:var(--ink);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{background:none;border:0;padding:10px 0 9px;font:500 12px 'DM Sans';color:#a8a8a8;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav button b{font-size:20px;line-height:1}
+nav button.on{color:var(--peak);box-shadow:inset 0 3px 0 var(--peak);font-weight:700}
+.card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:12px;border:1px solid var(--line)}
+.stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.stats div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
+.stats b{display:block;font:800 20px 'Bricolage Grotesque'}.stats span{font-size:12px;color:var(--mute)}
+.big{display:flex;gap:10px;margin-bottom:14px}
+.btn{border:0;border-radius:12px;padding:13px 14px;font:700 15px 'DM Sans';background:var(--ink);color:#fff;flex:1}
+.btn.alt{background:var(--peak);color:#0A0A0A}.btn.ghost{background:#e3e8e4;color:var(--ink)}.btn.sm{padding:8px 10px;font-size:13px;border-radius:9px;flex:none}
+label{display:block;font-size:13px;color:var(--mute);margin:10px 0 4px}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font:16px 'DM Sans';background:#fff;color:var(--ink)}
+input:focus,select:focus,button:focus-visible{outline:3px solid var(--warn);outline-offset:1px}
+.row{display:flex;gap:10px}.row>*{flex:1}
+h2{font-size:18px;margin:6px 0 10px}
+.seg{display:flex;background:#dde3de;border-radius:12px;padding:3px;margin-bottom:6px}
+.seg button{flex:1;border:0;background:none;padding:10px;border-radius:10px;font:700 14px 'DM Sans';color:var(--mute)}
+.seg button.on{background:var(--ink);color:var(--peak)}
+.gear{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.gear:last-child{border:0}.gear .n{flex:1}.gear .n small{display:block;color:var(--mute);font-size:13px}
+.step{display:flex;align-items:center;gap:6px}
+.step button{width:34px;height:34px;border-radius:50%;border:1px solid var(--ink);background:#fff;font:700 18px 'DM Sans'}
+.step span{min-width:22px;text-align:center;font-weight:700}
+.tot{display:flex;justify-content:space-between;padding:5px 0}
+.tot.g{border-top:2px solid var(--ink);margin-top:6px;padding-top:10px;font:800 20px 'Bricolage Grotesque'}
+.doc .top{display:flex;justify-content:space-between;gap:8px}
+.tag{font-size:12px;font-weight:700;padding:3px 8px;border-radius:20px;background:#e3e8e4}
+.tag.inv{background:var(--peak);color:#0A0A0A}
+.exp{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:10px}
+.empty{text-align:center;color:var(--mute);padding:28px 10px}
+.toast{position:absolute;left:16px;right:16px;bottom:80px;background:var(--ink);color:#fff;padding:12px;border-radius:12px;text-align:center;font-weight:700}
+</style></head>
+<body><div id="app">
+<header><div class="brand"><div><img src="logo.png" alt="sg.ke Sauti Gang Studios" style="height:46px;display:block"><h1 class="sr">Sauti Gang Studios</h1></div>
+<div class="vu" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div></div></header>
+<main id="main"></main>
+<nav id="nav"></nav>
+</div>
+<script>
+// ---------- API ----------
+async function api(m,u,b){const r=await fetch(u,{method:m,headers:{'Content-Type':'application/json'},body:b?JSON.stringify(b):undefined});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Request failed');return j}
+const EVENTS=['Wedding','Concert','Birthday','Graduation','Church / Fellowship','Corporate','Other'];
+const BIZ={name:'Sauti Gang Studios',line:'Sound equipment hire for events',contact:'Tel: add your number  |  Email: add your email'};
+let items=[], docs=[], view='home', toastMsg='';
+const today=()=>new Date().toISOString().slice(0,10);
+const blank=type=>({type,client:'',phone:'',email:'',event:'Wedding',date:today(),venue:'',days:1,qty:{},transport:0,discount:0,vat:false});
+let d=blank('Quotation');
+const money=n=>'KES '+Math.round(n).toLocaleString('en-KE');
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function calc(x){
+ const lines=items.filter(i=>x.qty[i.id]>0).map(i=>({name:i.name,qty:x.qty[i.id],price:i.price,days:x.days,amt:x.qty[i.id]*i.price*x.days}));
+ const sub=lines.reduce((a,l)=>a+l.amt,0), tr=+x.transport||0, dis=+x.discount||0;
+ const net=Math.max(sub+tr-dis,0), vat=x.vat?net*0.16:0;
+ return {lines,sub,tr,dis,vat,total:net+vat};
+}
+function toast(m){toastMsg=m;render();setTimeout(()=>{toastMsg='';render()},1800)}
+function go(v){view=v;render();$main.scrollTop=0}
+const $main=document.getElementById('main');
+
+// ---------- views ----------
+function render(){
+ const tabs=[['home','⌂','Home'],['new','+','New'],['docs','▤','Documents'],['gear','♫','Equipment']];
+ document.getElementById('nav').innerHTML=tabs.map(t=>`<button class="${view===t[0]?'on':''}" onclick="go('${t[0]}')"><b>${t[1]}</b>${t[2]}</button>`).join('');
+ const keep=$main.scrollTop;
+ $main.innerHTML=({home:vHome,new:vNew,docs:vDocs,gear:vGear})[view]()+(toastMsg?`<div class="toast">${toastMsg}</div>`:'');
+ $main.scrollTop=keep;
+}
+let installEv=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEv=e;render()});
+async function installApp(){installEv.prompt();await installEv.userChoice;installEv=null;render()}
+function vHome(){
+ const q=docs.filter(x=>x.type=='Quotation'),iv=docs.filter(x=>x.type=='Invoice');
+ const val=iv.reduce((a,x)=>a+x.total,0);
+ return (installEv?`<div class="card"><b>Install this app on your phone</b><div class="row" style="margin-top:8px"><button class="btn" onclick="installApp()">Add to home screen</button></div></div>`:"")+`<div class="stats"><div><b>${q.length}</b><span>Quotes</span></div><div><b>${iv.length}</b><span>Invoices</span></div><div><b>${(val/1000).toFixed(val>=1e5?0:1)}k</b><span>Invoiced (KES)</span></div></div>
+ <div class="big"><button class="btn" onclick="d=blank('Quotation');go('new')">New quotation</button><button class="btn alt" onclick="d=blank('Invoice');go('new')">New invoice</button></div>
+ <h2>Recent documents</h2>${docs.length?docs.slice(0,4).map(docCard).join(''):'<div class="empty">No documents yet. Start with a new quotation.</div>'}`;
+}
+function vNew(){
+ const c=calc(d);
+ return `<div class="seg"><button class="${d.type=='Quotation'?'on':''}" onclick="d.type='Quotation';render()">Quotation</button><button class="${d.type=='Invoice'?'on':''}" onclick="d.type='Invoice';render()">Invoice</button></div>
+ <div class="card"><h2>Client</h2>
+ <label>Client name</label><input value="${esc(d.client)}" oninput="d.client=this.value" placeholder="e.g. Wanjiru &amp; Kamau">
+ <div class="row"><div><label>Phone</label><input type="tel" value="${esc(d.phone)}" oninput="d.phone=this.value"></div><div><label>Email</label><input type="email" value="${esc(d.email)}" oninput="d.email=this.value"></div></div></div>
+ <div class="card"><h2>Event</h2>
+ <label>Event type</label><select onchange="d.event=this.value">${EVENTS.map(e=>`<option ${e==d.event?'selected':''}>${e}</option>`).join('')}</select>
+ <div class="row"><div><label>Event date</label><input type="date" value="${d.date}" onchange="d.date=this.value"></div><div><label>Hire days</label><input type="number" min="1" value="${d.days}" onchange="d.days=Math.max(1,+this.value||1);render()"></div></div>
+ <label>Venue</label><input value="${esc(d.venue)}" oninput="d.venue=this.value" placeholder="Venue / location"></div>
+ <div class="card"><h2>Equipment</h2>${items.map(i=>`<div class="gear"><div class="n">${esc(i.name)}<small>${money(i.price)} per day</small></div>
+  <div class="step"><button onclick="qty(${i.id},-1)" aria-label="Remove one">−</button><span>${d.qty[i.id]||0}</span><button onclick="qty(${i.id},1)" aria-label="Add one">+</button></div></div>`).join('')}</div>
+ <div class="card"><h2>Charges</h2>
+ <div class="row"><div><label>Transport / setup (KES)</label><input type="number" min="0" value="${d.transport}" onchange="d.transport=+this.value||0;render()"></div><div><label>Discount (KES)</label><input type="number" min="0" value="${d.discount}" onchange="d.discount=+this.value||0;render()"></div></div>
+ <label><input type="checkbox" style="width:auto" ${d.vat?'checked':''} onchange="d.vat=this.checked;render()"> Add VAT (16%)</label></div>
+ <div class="card"><div class="tot"><span>Equipment</span><span>${money(c.sub)}</span></div><div class="tot"><span>Transport / setup</span><span>${money(c.tr)}</span></div>
+ ${c.dis?`<div class="tot"><span>Discount</span><span>− ${money(c.dis)}</span></div>`:''}${d.vat?`<div class="tot"><span>VAT 16%</span><span>${money(c.vat)}</span></div>`:''}
+ <div class="tot g"><span>Total</span><span>${money(c.total)}</span></div></div>
+ <button class="btn" onclick="saveDoc()">Save ${d.type.toLowerCase()}</button>`;
+}
+function vDocs(){return `<h2>All documents</h2>${docs.length?docs.map(docCard).join(''):'<div class="empty">Nothing saved yet.</div>'}`}
+function docCard(x){
+ return `<div class="card doc"><div class="top"><div><b>${esc(x.client)||'Unnamed client'}</b><br><small style="color:var(--mute)">${x.no} · ${esc(x.event)} · ${x.date}</small></div>
+ <div style="text-align:right"><span class="tag ${x.type=='Invoice'?'inv':''}">${x.type}</span><br><b>${money(x.total)}</b></div></div>
+ <div class="exp"><button class="btn ghost sm" onclick="expPDF('${x.no}')">PDF</button><button class="btn ghost sm" onclick="expXLS('${x.no}','xlsx')">Excel</button><button class="btn ghost sm" onclick="expXLS('${x.no}','csv')">CSV</button><button class="btn ghost sm" onclick="expDOC('${x.no}')">Word</button></div>
+ <div class="row" style="margin-top:8px">${x.type=='Quotation'?`<button class="btn sm" onclick="toInvoice('${x.no}')">Convert to invoice</button>`:''}<button class="btn ghost sm" onclick="delDoc('${x.no}')">Delete</button></div></div>`;
+}
+function vGear(){
+ return `<h2>Equipment &amp; daily prices</h2><div class="card">${items.map(i=>`<div class="gear"><div class="n"><input value="${esc(i.name)}" onchange="upd(${i.id},'name',this.value)" aria-label="Name"></div>
+ <input style="width:110px" type="number" min="0" value="${i.price}" onchange="upd(${i.id},'price',+this.value||0)" aria-label="Price per day">
+ <button class="btn ghost sm" onclick="rmItem(${i.id})" aria-label="Delete item">✕</button></div>`).join('')}</div>
+ <button class="btn" onclick="addItem()">Add equipment</button>
+ <h2 style="margin-top:18px">Business details (shown on documents)</h2><div class="card"><label>Business name</label><input value="${esc(BIZ.name)}" onchange="setBiz('name',this.value)"><label>Tagline</label><input value="${esc(BIZ.line)}" onchange="setBiz('line',this.value)"><label>Contact line</label><input value="${esc(BIZ.contact)}" onchange="setBiz('contact',this.value)"></div>`;
+}
+
+// ---------- actions ----------
+const err=e=>toast(e.message||'Something went wrong');
+function qty(id,n){d.qty[id]=Math.max(0,(d.qty[id]||0)+n);render()}
+async function upd(id,k,v){const i=items.find(i=>i.id==id);i[k]=v;try{await api('PUT','/api/items/'+id,{name:i.name,price:i.price})}catch(e){return err(e)}render()}
+async function addItem(){try{items.push(await api('POST','/api/items',{name:'New item',price:0}))}catch(e){return err(e)}render()}
+async function rmItem(id){try{await api('DELETE','/api/items/'+id);items=items.filter(i=>i.id!=id)}catch(e){return err(e)}render()}
+async function setBiz(k,v){BIZ[k]=v;try{await api('PUT','/api/settings',BIZ)}catch(e){return err(e)}document.querySelector('header h1').textContent=BIZ.name;toast('Business details saved')}
+async function saveDoc(){
+ try{const doc=await api('POST','/api/docs',d);docs.unshift(doc);d=blank(d.type);view='docs';toast('Saved '+doc.no)}catch(e){err(e)}
+}
+const find=no=>docs.find(x=>x.no==no);
+async function delDoc(no){if(!confirm('Delete '+no+'?'))return;try{await api('DELETE','/api/docs/'+no);docs=docs.filter(x=>x.no!=no);render()}catch(e){err(e)}}
+async function toInvoice(no){try{const doc=await api('POST','/api/docs/'+no+'/invoice');docs.unshift(doc);toast('Invoice '+doc.no+' created')}catch(e){err(e)}}
+async function init(){
+ try{[items,docs]=await Promise.all([api('GET','/api/items'),api('GET','/api/docs')]);Object.assign(BIZ,await api('GET','/api/settings'));document.querySelector('header h1').textContent=BIZ.name}
+ catch(e){toast('Cannot reach the server. Is it running?')}
+ render();
+}
+
+// ---------- exports ----------
+function save(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),2000)}
+let _logo;async function logoData(){if(_logo!==undefined)return _logo;try{const b=await(await fetch("logo.png")).blob();_logo=await new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)})}catch(e){_logo=null}return _logo}
+async function expPDF(no){
+ const logo=await logoData();
+ const x=find(no),{jsPDF}=window.jspdf,p=new jsPDF();
+ p.setFillColor(0,0,0);p.rect(0,0,210,38,'F');if(logo)p.addImage(logo,'PNG',12,6,44,26);p.setFontSize(10);p.setTextColor(255,222,89);p.text(BIZ.name,64,16);p.setTextColor(255);p.text(BIZ.line,64,22);p.text(BIZ.contact,64,28);
+ p.setTextColor(255,222,89);p.setFontSize(18);p.text(x.type.toUpperCase(),196,22,{align:'right'});
+ p.setTextColor(21,35,45);p.setFontSize(10);
+ p.text(['No: '+x.no,'Date: '+x.date,'Event: '+x.event,'Venue: '+(x.venue||'-')],14,46);
+ p.text(['Billed to: '+(x.client||'-'),'Phone: '+(x.phone||'-'),'Email: '+(x.email||'-')],120,46);
+ p.autoTable({startY:72,head:[['Item','Qty','Days','Rate (KES)','Amount (KES)']],body:x.lines.map(l=>[l.name,l.qty,l.days,l.price.toLocaleString(),l.amt.toLocaleString()]),headStyles:{fillColor:[255,222,89],textColor:[10,10,10]},styles:{fontSize:10}});
+ let y=p.lastAutoTable.finalY+8;const r=(a,b,bold)=>{p.setFont(undefined,bold?'bold':'normal');p.text(a,130,y);p.text(b,196,y,{align:'right'});y+=7};
+ r('Equipment',money(x.sub));r('Transport / setup',money(x.transport));if(x.discount)r('Discount','- '+money(x.discount));if(x.vat)r('VAT 16%',money(x.vatAmt));r('TOTAL',money(x.total),true);
+ p.setFont(undefined,'normal');p.setFontSize(9);p.text(x.type=='Quotation'?'This quotation is valid for 14 days. A deposit confirms your booking.':'Payment due on or before the event date. Thank you for choosing Sauti Gang Studios.',14,285);
+ p.save(x.no+'.pdf');
+}
+function expXLS(no,fmt){
+ const x=find(no);
+ const rows=[[BIZ.name],[x.type.toUpperCase(),x.no],['Date',x.date],['Client',x.client],['Phone',x.phone],['Email',x.email],['Event',x.event],['Venue',x.venue],[],
+ ['Item','Qty','Days','Rate (KES)','Amount (KES)'],...x.lines.map(l=>[l.name,l.qty,l.days,l.price,l.amt]),[],
+ ['','','','Equipment',x.sub],['','','','Transport / setup',x.transport],['','','','Discount',-x.discount],['','','','VAT',x.vatAmt],['','','','TOTAL',x.total]];
+ const ws=XLSX.utils.aoa_to_sheet(rows);ws['!cols']=[{wch:24},{wch:6},{wch:6},{wch:18},{wch:16}];
+ const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,x.type);
+ XLSX.writeFile(wb,x.no+'.'+fmt,{bookType:fmt});
+}
+function expDOC(no){
+ const x=find(no);
+ const html=`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>${x.no}</title></head><body style="font-family:Calibri,Arial">
+ <h1 style="color:#000;margin:0">${BIZ.name}</h1><p style="color:#555;margin:0">${BIZ.line}<br>${BIZ.contact}</p><h2 style="color:#B08900">${x.type.toUpperCase()} ${x.no}</h2>
+ <p><b>Date:</b> ${x.date}<br><b>Billed to:</b> ${esc(x.client)} ${esc(x.phone)} ${esc(x.email)}<br><b>Event:</b> ${esc(x.event)} at ${esc(x.venue||'-')}</p>
+ <table border="1" cellpadding="6" cellspacing="0" style="border-collapse:collapse;width:100%"><tr style="background:#FFDE59;color:#000"><th align="left">Item</th><th>Qty</th><th>Days</th><th>Rate (KES)</th><th>Amount (KES)</th></tr>
+ ${x.lines.map(l=>`<tr><td>${esc(l.name)}</td><td align="center">${l.qty}</td><td align="center">${l.days}</td><td align="right">${l.price.toLocaleString()}</td><td align="right">${l.amt.toLocaleString()}</td></tr>`).join('')}
+ <tr><td colspan="4" align="right">Equipment</td><td align="right">${x.sub.toLocaleString()}</td></tr><tr><td colspan="4" align="right">Transport / setup</td><td align="right">${x.transport.toLocaleString()}</td></tr>
+ ${x.discount?`<tr><td colspan="4" align="right">Discount</td><td align="right">-${x.discount.toLocaleString()}</td></tr>`:''}${x.vat?`<tr><td colspan="4" align="right">VAT 16%</td><td align="right">${Math.round(x.vatAmt).toLocaleString()}</td></tr>`:''}
+ <tr><td colspan="4" align="right"><b>TOTAL</b></td><td align="right"><b>${Math.round(x.total).toLocaleString()}</b></td></tr></table>
+ <p style="color:#555">${x.type=='Quotation'?'Valid for 14 days. A deposit confirms your booking.':'Thank you for choosing Sauti Gang Studios.'}</p></body></html>`;
+ save(new Blob(['\ufeff',html],{type:'application/msword'}),x.no+'.doc');
+}
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+init();
+</script></body></html>
